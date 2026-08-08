@@ -1186,8 +1186,8 @@ WidgetPtr ConstructInput(const ui::uix::Node& node, const std::string& text) {
         return rb;
     }
     if (type == "range") {
-        // 解析 min / max / value 静态属性（缺省 0..100, value=mid）
-        float mn = 0.0f, mx = 100.0f, val = 50.0f;
+        // 解析 min / max / value / step 静态属性（缺省 0..100, value=mid, step=1）
+        float mn = 0.0f, mx = 100.0f, val = 50.0f, stp = 1.0f;
         bool hasVal = false;
         for (const auto& a : node.attrs) {
             if (a.kind != ui::uix::AttrKind::Static) continue;
@@ -1195,13 +1195,15 @@ WidgetPtr ConstructInput(const ui::uix::Node& node, const std::string& text) {
                 if      (a.name == "min")   mn  = std::stof(a.rawValue);
                 else if (a.name == "max")   mx  = std::stof(a.rawValue);
                 else if (a.name == "value") { val = std::stof(a.rawValue); hasVal = true; }
+                else if (a.name == "step")  stp = std::stof(a.rawValue);
             } catch (...) {}
         }
         if (mx <= mn) mx = mn + 1.0f;  // sane defaults
+        if (stp <= 0) stp = 1.0f;
         if (!hasVal) val = (mn + mx) * 0.5f;
         if (val < mn) val = mn;
         if (val > mx) val = mx;
-        auto slider = std::make_shared<SliderWidget>(mn, mx, val);
+        auto slider = std::make_shared<SliderWidget>(mn, mx, val, stp);
         slider->cursor = ui::CursorKind::Pointer;
         return slider;
     }
