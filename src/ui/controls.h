@@ -180,7 +180,8 @@ private:
 // ---- Slider ----
 class UI_API SliderWidget : public Widget {
 public:
-    SliderWidget(float mn, float mx, float val) : min_(mn), max_(mx), value_(val) { focusable = true; }
+    SliderWidget(float mn, float mx, float val, float step = 1.0f)
+        : min_(mn), max_(mx), value_(val), step_(step) { focusable = true; }
 
     float Value() const { return value_; }
     void SetValue(float v) { value_ = std::clamp(v, min_, max_); }
@@ -195,7 +196,7 @@ public:
     D2D1_SIZE_F SizeHint() const override;
 
 private:
-    float min_, max_, value_;
+    float min_, max_, value_, step_;
     bool dragging_ = false;
     float ValueFromX(float x) const;
     void RetargetThumbAnimation();
