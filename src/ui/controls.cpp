@@ -655,11 +655,31 @@ float SliderWidget::ValueFromX(float x) const {
 
 bool SliderWidget::OnMouseDown(const MouseEvent& e) {
     if (Contains(e.x, e.y)) {
-        dragging_ = true;
-        pressed = true;
-        RetargetThumbAnimation();
-        value_ = ValueFromX(e.x);
-        if (onFloatChanged) onFloatChanged(value_);
+        // 点在 thumb 上 → 进入拖动；点在轨道上 → 向点击侧微调一档
+        float thumbR = 10.0f;
+        float trackL = rect.left + thumbR;
+        float trackR = rect.right - thumbR;
+        float pct = (max_ > min_) ? (value_ - min_) / (max_ - min_) : 0;
+        float thumbX = trackL + pct * (trackR - trackL);
+        float cy = (rect.top + rect.bottom) / 2;
+        float dx = e.x - thumbX, dy = e.y - cy;
+        bool onThumb = (dx * dx + dy * dy) <= (14.0f * 14.0f);  // 14px hit area
+        if (onThumb) {
+            dragging_ = true;
+            pressed = true;
+            RetargetThumbAnimation();
+            value_ = ValueFromX(e.x);
+            if (onFloatChanged) onFloatChanged(value_);
+        } else {
+            // 轨道点击：微调（每点一步 step，不直达）
+            float newValue = value_ + ((e.x < thumbX) ? -step_ : step_);
+            if (newValue < min_) newValue = min_;
+            if (newValue > max_) newValue = max_;
+            if (newValue != value_) {
+                value_ = newValue;
+                if (onFloatChanged) onFloatChanged(value_);
+            }
+        }
         return true;
     }
     return false;
