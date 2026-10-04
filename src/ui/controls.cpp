@@ -2223,7 +2223,7 @@ void ScrollViewWidget::OnDraw(Renderer& r) {
         auto thumb = ThumbRect();
         bool dark = theme::IsDark();
         D2D1_COLOR_F thumbColor;
-        if (draggingThumb_)  thumbColor = theme::kAccent();
+        if (draggingThumb_)  thumbColor = dark ? theme::Rgba(0xFF,0xFF,0xFF,0.72f) : theme::Rgba(0x00,0x00,0x00,0.62f);
         else if (hoveringBar_) thumbColor = dark ? theme::Rgba(0xFF,0xFF,0xFF,0.55f) : theme::Rgba(0x00,0x00,0x00,0.45f);
         else                   thumbColor = dark ? theme::Rgba(0xFF,0xFF,0xFF,0.38f) : theme::Rgba(0x00,0x00,0x00,0.28f);
         float radius = ThumbWidth() / 2;

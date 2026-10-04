@@ -497,9 +497,9 @@ private:
     bool hoveringBar_ = false;
     float dragStartY_ = 0;
     float dragStartScroll_ = 0;
-    static constexpr float kBarSpace    = 10.0f;  // 滚动条占用的固定布局宽度
-    static constexpr float kThumbThin   = 5.0f;   // 默认细条
-    static constexpr float kThumbWide   = 9.0f;   // hover/drag 时粗条
+    static constexpr float kBarSpace    = 10.0f;  // Hit area stays wider than the visual thumb
+    static constexpr float kThumbThin   = 3.0f;   // 默认细条
+    static constexpr float kThumbWide   = 5.0f;   // hover/drag 时粗条
 
     float ThumbWidth() const { return (hoveringBar_ || draggingThumb_) ? kThumbWide : kThumbThin; }
     void ClampScroll();
